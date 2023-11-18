@@ -134,6 +134,8 @@ class AllocatedObj {
 
 /*
  * Memory types
+ * 即堆中的对象类型
+ * **zn**
  */
 enum MemoryType {
   // Memory type by sub systems. It occupies lower byte.
