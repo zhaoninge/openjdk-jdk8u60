@@ -58,13 +58,18 @@ class ParCompactionManager;
 
 class oopDesc {
   friend class VMStructs;
+
+  // **zn** 对象头
  private:
+    // 标记信息
   volatile markOop  _mark;
+    // 元数据信息
   union _metadata {
     Klass*      _klass;
     narrowKlass _compressed_klass;
   } _metadata;
 
+  // 静态变量用于快速访问BarrierSet
   // Fast access to barrier set.  Must be initialized.
   static BarrierSet* _bs;
 
