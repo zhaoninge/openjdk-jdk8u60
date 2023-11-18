@@ -319,6 +319,12 @@ public:
   bool verify_young_ages();
 #endif // PRODUCT
 
+  /**
+   * **zn**
+   * 获取新的时间预测
+   * @param seq 阶段序列，最近n次时间采样
+   * @return
+   */
   double get_new_prediction(TruncatedSeq* seq) {
     return MAX2(seq->davg() + sigma() * seq->dsd(),
                 seq->davg() * confidence_factor(seq->num()));
