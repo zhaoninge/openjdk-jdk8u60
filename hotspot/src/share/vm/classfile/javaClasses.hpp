@@ -387,6 +387,9 @@ class java_lang_Thread : AllStatic {
   static jlong park_event(oop java_thread);
   static bool set_park_event(oop java_thread, jlong ptr);
 
+  /**
+   * *zn*JVM中的线程状态，7种
+   */
   // Java Thread Status for JVMTI and M&M use.
   // This thread status info is saved in threadStatus field of
   // java.lang.Thread java class.
@@ -406,14 +409,17 @@ class java_lang_Thread : AllStatic {
                                JVMTI_THREAD_STATE_WAITING +
                                JVMTI_THREAD_STATE_WAITING_WITH_TIMEOUT +
                                JVMTI_THREAD_STATE_IN_OBJECT_WAIT,
+    // 进入等待
     PARKED                   = JVMTI_THREAD_STATE_ALIVE +          // LockSupport.park()
                                JVMTI_THREAD_STATE_WAITING +
                                JVMTI_THREAD_STATE_WAITING_INDEFINITELY +
                                JVMTI_THREAD_STATE_PARKED,
+    // 进入等待，带有过期时间
     PARKED_TIMED             = JVMTI_THREAD_STATE_ALIVE +          // LockSupport.park(long)
                                JVMTI_THREAD_STATE_WAITING +
                                JVMTI_THREAD_STATE_WAITING_WITH_TIMEOUT +
                                JVMTI_THREAD_STATE_PARKED,
+    // 进入一个同步块
     BLOCKED_ON_MONITOR_ENTER = JVMTI_THREAD_STATE_ALIVE +          // (re-)entering a synchronization block
                                JVMTI_THREAD_STATE_BLOCKED_ON_MONITOR_ENTER,
     TERMINATED               = JVMTI_THREAD_STATE_TERMINATED

@@ -121,6 +121,12 @@ void CollectedHeap::post_allocation_setup_array(KlassHandle klass,
   post_allocation_notify(klass, new_obj, new_obj->size());
 }
 
+/**
+ * *zn* 对象分配过程，common_mem_allocate_init调用
+ * @param klass
+ * @param size
+ * @return
+ */
 HeapWord* CollectedHeap::common_mem_allocate_noinit(KlassHandle klass, size_t size, TRAPS) {
 
   // Clear unhandled oops for memory allocation.  Memory allocation might
@@ -133,6 +139,7 @@ HeapWord* CollectedHeap::common_mem_allocate_noinit(KlassHandle klass, size_t si
   }
 
   HeapWord* result = NULL;
+  // *zn* 使用TLAB快速分配
   if (UseTLAB) {
     result = allocate_from_tlab(klass, THREAD, size);
     if (result != NULL) {
@@ -142,6 +149,7 @@ HeapWord* CollectedHeap::common_mem_allocate_noinit(KlassHandle klass, size_t si
     }
   }
   bool gc_overhead_limit_was_exceeded = false;
+  // *zn* 慢速分配
   result = Universe::heap()->mem_allocate(size,
                                           &gc_overhead_limit_was_exceeded);
   if (result != NULL) {
@@ -180,7 +188,14 @@ HeapWord* CollectedHeap::common_mem_allocate_noinit(KlassHandle klass, size_t si
   }
 }
 
+/**
+ * *zn* 对象分配过程，obj_allocate调用
+ * @param klass
+ * @param size
+ * @return
+ */
 HeapWord* CollectedHeap::common_mem_allocate_init(KlassHandle klass, size_t size, TRAPS) {
+  // *zn*
   HeapWord* obj = common_mem_allocate_noinit(klass, size, CHECK_NULL);
   init_obj(obj, size);
   return obj;
@@ -205,10 +220,17 @@ void CollectedHeap::init_obj(HeapWord* obj, size_t size) {
   Copy::fill_to_aligned_words(obj + hs, size - hs);
 }
 
+/**
+ * *zn* 对象分配过程，分配instanceOop，InstanceKlass::allocate_instance调用
+ * @param klass
+ * @param size
+ * @return
+ */
 oop CollectedHeap::obj_allocate(KlassHandle klass, int size, TRAPS) {
   debug_only(check_for_valid_allocation_state());
   assert(!Universe::heap()->is_gc_active(), "Allocation during gc not allowed");
   assert(size >= 0, "int won't convert to size_t");
+  // *zn*
   HeapWord* obj = common_mem_allocate_init(klass, size, CHECK_NULL);
   post_allocation_setup_obj(klass, obj, size);
   NOT_PRODUCT(Universe::heap()->check_for_bad_heap_word_value(obj, size));

@@ -41,15 +41,20 @@
 // Note: the ThreadState is legacy code and is not correctly implemented.
 // Uses of ThreadState need to be replaced by the state in the JavaThread.
 
+/**
+ * *zn* jvm统一定义的操作系统级线程状态，9种
+ */
 enum ThreadState {
   ALLOCATED,                    // Memory has been allocated but not initialized
   INITIALIZED,                  // The thread has been initialized but yet started
   RUNNABLE,                     // Has been started and is runnable, but not necessarily running
   MONITOR_WAIT,                 // Waiting on a contended monitor lock
+  // 等待一个条件变量
   CONDVAR_WAIT,                 // Waiting on a condition variable
   OBJECT_WAIT,                  // Waiting on an Object.wait() call
   BREAKPOINTED,                 // Suspended at breakpoint
   SLEEPING,                     // Thread.sleep()
+  // 僵死状态，待回收
   ZOMBIE                        // All done, but not reclaimed yet
 };
 

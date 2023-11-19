@@ -1146,6 +1146,10 @@ instanceOop InstanceKlass::register_finalizer(instanceOop i, TRAPS) {
   return h_i();
 }
 
+/**
+ * *zn* 对象分配过程，分配instanceOop
+ * @return
+ */
 instanceOop InstanceKlass::allocate_instance(TRAPS) {
   bool has_finalizer_flag = has_finalizer(); // Query before possible GC
   int size = size_helper();  // Query before forming handle.
@@ -1154,6 +1158,7 @@ instanceOop InstanceKlass::allocate_instance(TRAPS) {
 
   instanceOop i;
 
+  // 分配instanceOop的主要工作
   i = (instanceOop)CollectedHeap::obj_allocate(h_k, size, CHECK_NULL);
   if (has_finalizer_flag && !RegisterFinalizersAtInit) {
     i = register_finalizer(i, CHECK_NULL);
